@@ -13,7 +13,6 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
-const pages1 = ['Products', 'Pricing', 'Blog'];
 const pages = [
     {
         name: 'Address:',
@@ -130,7 +129,7 @@ const Topbar = () => {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                            <Box sx={{ mr: 3, py: 1 }}>
+                            <Box sx={{ mr: 3, }}>
                                 <Button
                                     key={page.name}
                                     onClick={handleCloseNavMenu}
