@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -6,14 +6,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Topbar from '../Topbar/Topbar';
@@ -22,6 +19,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import BackupTableIcon from '@mui/icons-material/BackupTable';
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 
 const drawerWidth = 240;
 
@@ -29,7 +27,7 @@ function Sidebar(props) {
     const navigate = useNavigate();
 
     const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -78,6 +76,11 @@ function Sidebar(props) {
             >
                 <Topbar />
             </AppBar>
+
+            <IconButton onClick={handleDrawerToggle} size="large" aria-label="open drawer" sx={{ mt: 5, display: { sm: 'none' } }}>
+                <MenuOpenIcon fontSize="large" />
+            </IconButton>
+
             <Box
                 component="nav"
                 sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -120,13 +123,5 @@ function Sidebar(props) {
         </Box>
     );
 }
-
-Sidebar.propTypes = {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window: PropTypes.func,
-};
 
 export default Sidebar;
