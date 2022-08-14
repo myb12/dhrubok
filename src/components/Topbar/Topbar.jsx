@@ -128,8 +128,8 @@ const Topbar = () => {
                         LOGO
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Box sx={{ mr: 3, }}>
+                        {pages.map((page, index) => (
+                            <Box key={index} sx={{ mr: 3, }}>
                                 <Button
                                     key={page.name}
                                     onClick={handleCloseNavMenu}

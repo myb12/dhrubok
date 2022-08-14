@@ -31,7 +31,7 @@ const numberOfRows = [
     },
     {
         value: 20,
-        label: '20',
+        label: 'All',
     },
 ];
 const fakeData = [
@@ -187,15 +187,14 @@ export default function List() {
         };
 
         let filteredUser = fakeData?.filter(item =>
-            item?.name.toLowerCase()?.match(searchText.toLowerCase()) ||
-            item?.gender?.toLowerCase()?.match(searchText.toLowerCase()) ||
-            item?.email.toLowerCase()?.match(searchText.toLowerCase()));
+            item?.name.toLowerCase()?.includes(searchText.toLowerCase()) ||
+            item?.gender?.toLowerCase()?.includes(searchText.toLowerCase()) ||
+            item?.email.toLowerCase()?.includes(searchText.toLowerCase()));
 
         setPageSize(5);
         setPageNumber(1);
         setTotalPage(Math.ceil(filteredUser.length / pageSize));
         setRows(paginate(filteredUser, pageSize, pageNumber));
-        // setRows(filteredUser);
     }
 
     useEffect(() => {
