@@ -18,6 +18,10 @@ import { PageBox } from './ListStyle';
 
 const numberOfRows = [
     {
+        value: 3,
+        label: '3',
+    },
+    {
         value: 5,
         label: '5',
     },
@@ -129,11 +133,13 @@ export default function List() {
     const [pageNumber, setPageNumber] = useState(1);
     const [totalPage, setTotalPage] = useState(Math.ceil(fakeData.length / pageSize));
     const [rows, setRows] = useState([]);
+    const [searchText, setSearchText] = useState('');
     const [sort, setSort] = useState({
         field: '',
         clicked: false
     });
 
+    // Pagination functionalities
     const paginate = useCallback((array, page_size, page_number) => {
         return array.slice((page_number - 1) * page_size, (page_number) * page_size);
     }, [])
@@ -162,9 +168,45 @@ export default function List() {
         }
     }
 
+    const handlePageSize = (event) => {
+        setPageNumber(1);
+        setPageSize(+event.target.value);
+    };
+
+    // search functionalities
+    const handleSearchChange = (e) => {
+        e.preventDefault();
+        setSearchText(e.target.value);
+    }
+
+    const handleSearch = () => {
+        if (searchText === '') {
+            setRows(paginate(fakeData, 5, 1));
+            setTotalPage(Math.ceil(fakeData.length / pageSize));
+            return;
+        };
+
+        let filteredUser = fakeData?.filter(item =>
+            item?.name.toLowerCase()?.match(searchText.toLowerCase()) ||
+            item?.gender?.toLowerCase()?.match(searchText.toLowerCase()) ||
+            item?.email.toLowerCase()?.match(searchText.toLowerCase()));
+
+        setPageSize(5);
+        setPageNumber(1);
+        setTotalPage(Math.ceil(filteredUser.length / pageSize));
+        setRows(paginate(filteredUser, pageSize, pageNumber));
+        // setRows(filteredUser);
+    }
+
+    useEffect(() => {
+        handleSearch();
+    }, [searchText]); // eslint-disable-line
+
+
+    // Sort functionalities
     const handleSort = (value) => {
         setSort({ field: value, clicked: !sort.clicked });
-        console.log('value', value);
+
         if (sort.clicked) {
             setRows(prevState => prevState.sort((a, b) => (a[value] > b[value]) - (a[value] < b[value])))
         } else {
@@ -172,18 +214,20 @@ export default function List() {
         }
     }
 
-    const handlePageSize = (event) => {
-        setPageNumber(1);
-        setPageSize(+event.target.value);
-    };
 
 
     return (
         <Box sx={{ px: 3, pb: 3 }} className="section">
-            <Typography variant="h4" sx={{ mb: 3 }}>User List</Typography>
+            <Typography variant="h4" sx={{ mb: 3, mt: -3 }}>User List</Typography>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', my: 2, pr: 1 }}>
-                <TextField id="input-with-sx" label="Search..." variant="outlined" />
+            <Box sx={{ display: 'flex', alignItems: 'center', my: 2, pr: 1 }}>
+                <TextField
+                    size="small"
+                    id="input-with-sx"
+                    label="Search..."
+                    variant="outlined"
+                    onChange={handleSearchChange}
+                    value={searchText} />
                 <SearchIcon sx={{ color: 'action.active', ml: -4, }} />
             </Box>
 
