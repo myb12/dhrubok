@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -28,7 +28,7 @@ const numberOfRows = [
         label: '20',
     },
 ];
-const rows = [
+const fakeData = [
     {
         name: 'Mohammad Yasin',
         email: 'lexample@email.com',
@@ -68,7 +68,7 @@ const rows = [
     {
         name: 'Shakila',
         email: 'axample@email.com',
-        gender: 'female',
+        gender: 'Female',
         phone: '01674687835'
     },
     {
@@ -98,7 +98,7 @@ const rows = [
     {
         name: 'Shakila',
         email: 'axample@email.com',
-        gender: 'female',
+        gender: 'Female',
         phone: '01674687835'
     },
     {
@@ -123,15 +123,24 @@ const rows = [
 
 export default function List() {
     const [numRows, setNumRows] = useState(5);
+    const [rows, setRows] = useState([]);
     const [sort, setSort] = useState({
         field: '',
         clicked: false
     });
-
+    useEffect(() => {
+        setRows(fakeData);
+    }, [])
     const handleSort = (value) => {
         setSort({ field: value, clicked: !sort.clicked });
-        console.log('sort', sort)
+        console.log('value', value);
+        if (sort.clicked) {
+            setRows(prevState => prevState.sort((a, b) => (a[value] > b[value]) - (a[value] < b[value])))
+        } else {
+            setRows(prevState => prevState.sort((a, b) => (a[value] < b[value]) - (a[value] > b[value])))
+        }
     }
+    console.log('rows', rows);
 
     const handleChange = (event) => {
         setNumRows(+event.target.value);
@@ -181,7 +190,7 @@ export default function List() {
                         </TableRow>
                     </TableHead>
                     <TableBody sx={{ pl: 2 }}>
-                        {rows.map((row, index) => (
+                        {rows?.map((row, index) => (
                             <TableRow
                                 key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
