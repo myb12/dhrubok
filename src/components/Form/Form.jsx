@@ -1,19 +1,26 @@
-import { Alert, Button, Grid, InputAdornment, InputLabel, Select, TextField, Typography } from '@mui/material';
+import { Alert, Button, Collapse, Grid, IconButton, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import { useForm } from 'react-hook-form';
+import jsonData from '../../data/db.json';
+import useFetch from '../../hooks/useFetch';
+import useAddUser from '../../hooks/useAddUser';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Form = () => {
     const [gender, setGender] = useState('Male');
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const [open, setOpen] = useState(true);
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+    const [addUser, success] = useAddUser();
 
     const handleGenderChange = (value) => {
         setGender(value);
     }
 
-
-    const onSubmit = (data) => {
-        console.log('data', data);
+    const onSubmit = async (data) => {
+        addUser(data);
+        reset();
     }
     return (
         <div className='section'>
@@ -23,7 +30,27 @@ const Form = () => {
                     <Typography variant="h4" sx={{ mt: -3 }}>
                         Add User
                     </Typography>
-
+                    {
+                        success && <Collapse in={open}>
+                            <Alert
+                                action={
+                                    <IconButton
+                                        aria-label="close"
+                                        color="inherit"
+                                        size="small"
+                                        onClick={() => {
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        <CloseIcon fontSize="inherit" />
+                                    </IconButton>
+                                }
+                                sx={{ mb: 2 }}
+                            >
+                                Close me!
+                            </Alert>
+                        </Collapse>
+                    }
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <TextField
                             label="Name"
@@ -52,15 +79,6 @@ const Form = () => {
                                 Email is required
                             </Alert>
                         }
-
-                        {/* <TextField
-                            type="text"
-                            label="Gender"
-                            variant="standard"
-                            name="gender"
-                            sx={{ mt: 2, width: '100%' }}
-                            {...register('gender', { required: true })}
-                        /> */}
 
 
                         <TextField
