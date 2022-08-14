@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,6 +13,8 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import MenuItem from '@mui/material/MenuItem';
+import { PageBox } from './ListStyle';
+
 
 const numberOfRows = [
     {
@@ -90,6 +92,18 @@ const fakeData = [
         phone: '01674687835'
     },
     {
+        name: 'Rakibul',
+        email: 'example@email.com',
+        gender: 'Male',
+        phone: '01674687835'
+    },
+    {
+        name: 'Fakrul',
+        email: 'example@email.com',
+        gender: 'Male',
+        phone: '01674687835'
+    },
+    {
         name: 'Rahim',
         email: 'example@email.com',
         gender: 'Male',
@@ -107,30 +121,47 @@ const fakeData = [
         gender: 'Male',
         phone: '01674687835'
     },
-    {
-        name: 'Rakibul',
-        email: 'example@email.com',
-        gender: 'Male',
-        phone: '01674687835'
-    },
-    {
-        name: 'Fakrul',
-        email: 'example@email.com',
-        gender: 'Male',
-        phone: '01674687835'
-    },
+
 ];
 
 export default function List() {
-    const [numRows, setNumRows] = useState(5);
+    const [pageSize, setPageSize] = useState(5);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [totalPage, setTotalPage] = useState(Math.ceil(fakeData.length / pageSize));
     const [rows, setRows] = useState([]);
     const [sort, setSort] = useState({
         field: '',
         clicked: false
     });
-    useEffect(() => {
-        setRows(fakeData);
+
+    const paginate = useCallback((array, page_size, page_number) => {
+        return array.slice((page_number - 1) * page_size, (page_number) * page_size);
     }, [])
+
+    useEffect(() => {
+        setRows(paginate(fakeData, pageSize, pageNumber));
+        setTotalPage(Math.ceil(fakeData.length / pageSize));
+    }, [pageSize, pageNumber]); // eslint-disable-line
+
+    const handlePageNumber = (value) => {
+        let nextPage;
+        let prevPage;
+        if (value === 'next') {
+            nextPage = pageNumber + 1;
+
+            if (nextPage > totalPage) return;
+
+            setPageNumber(nextPage);
+        } else {
+            prevPage = pageNumber - 1;
+
+            if (prevPage < 1) return;
+
+            setPageNumber(prevPage);
+
+        }
+    }
+
     const handleSort = (value) => {
         setSort({ field: value, clicked: !sort.clicked });
         console.log('value', value);
@@ -140,11 +171,12 @@ export default function List() {
             setRows(prevState => prevState.sort((a, b) => (a[value] < b[value]) - (a[value] > b[value])))
         }
     }
-    console.log('rows', rows);
 
-    const handleChange = (event) => {
-        setNumRows(+event.target.value);
+    const handlePageSize = (event) => {
+        setPageNumber(1);
+        setPageSize(+event.target.value);
     };
+
 
     return (
         <Box sx={{ px: 3, pb: 3 }} className="section">
@@ -208,14 +240,14 @@ export default function List() {
             </TableContainer>
 
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center', alignItems: 'center', p: 2 }}>
                 <Box sx={{ p: 2, mr: 3 }}>
                     <TextField
                         id="outlined-select-currency"
                         select
                         label="Rows per page"
-                        value={numRows}
-                        onChange={handleChange}
+                        value={pageSize}
+                        onChange={handlePageSize}
                         helperText="Please select number of rows"
                         variant='standard'
                         sx={{ textAlign: 'left' }}
@@ -228,19 +260,46 @@ export default function List() {
                     </TextField>
                 </Box>
                 {
-                    `Page 1 of 5`
+                    `Page ${pageNumber} of ${totalPage}`
                 }
-                <Button variant="outlined" sx={{
-                    mx: 1
-                }}>
+                <Button
+                    onClick={() => handlePageNumber('prev')}
+                    variant="text"
+                    sx={{ mx: 1, my: 1 }}
+                    size="small"
+                    disabled={pageNumber === 1}
+                >
                     <KeyboardArrowLeftIcon />
                 </Button>
-                <Button variant="outlined" >
+
+                <Box sx={{ display: 'flex' }}>
+                    {
+                        [...new Array(totalPage)].map((_, index) => <PageBox
+                            sx={{ mx: 0.5 }}
+                            key={index}
+                            style={{
+                                backgroundColor: pageNumber === index + 1 ? '#1976d2' : '#fff',
+                                color: pageNumber === index + 1 ? '#fff' : '#1976d2'
+                            }}
+                            onClick={() => setPageNumber(index + 1)}
+                        >
+                            {index + 1}
+                        </PageBox>)
+                    }
+                </Box>
+
+                <Button
+                    onClick={() => handlePageNumber('next')}
+                    variant="text"
+                    sx={{ ml: 1, my: 1 }}
+                    size="small"
+                    disabled={pageNumber === totalPage}
+                >
                     <KeyboardArrowRightIcon />
                 </Button>
             </Box>
 
-        </Box>
+        </Box >
     );
 }
 

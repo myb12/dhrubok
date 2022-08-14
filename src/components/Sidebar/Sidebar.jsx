@@ -77,7 +77,16 @@ function Sidebar(props) {
                 <Topbar />
             </AppBar>
 
-            <IconButton onClick={handleDrawerToggle} size="large" aria-label="open drawer" sx={{ mt: 5, display: { sm: 'none' } }}>
+            <IconButton
+                onClick={handleDrawerToggle}
+                size="large"
+                aria-label="open drawer"
+                sx={{
+                    mt: 7,
+                    display: { sm: 'none' },
+                    position: 'fixed',
+                    backgroundColor: '#fff'
+                }}>
                 <MenuOpenIcon fontSize="large" />
             </IconButton>
 
