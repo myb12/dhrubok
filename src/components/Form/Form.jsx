@@ -2,10 +2,10 @@ import { Alert, Button, Collapse, Grid, IconButton, TextField, Typography } from
 import React, { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import { useForm } from 'react-hook-form';
-import jsonData from '../../data/db.json';
 import useFetch from '../../hooks/useFetch';
 import useAddUser from '../../hooks/useAddUser';
 import CloseIcon from '@mui/icons-material/Close';
+import { v4 as uuidv4 } from 'uuid';
 
 const Form = () => {
     const [gender, setGender] = useState('Male');
@@ -19,7 +19,8 @@ const Form = () => {
     }
 
     const onSubmit = async (data) => {
-        addUser(data);
+        const dataToAdd = { ...data, id: uuidv4() }
+        addUser(dataToAdd);
         reset();
     }
     return (

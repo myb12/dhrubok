@@ -11,9 +11,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 
-const pages = [
+const myInfo = [
     {
         name: 'Address:',
         val: 'Shekertek - 9, Mohammadpur, Dhaka'
@@ -52,7 +51,6 @@ const Topbar = () => {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                     <Typography
                         variant="h6"
                         noWrap
@@ -99,16 +97,15 @@ const Topbar = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">
-                                        {page.name} <span>{page.val}</span>
+                            {myInfo.map((page) => (
+                                <MenuItem key={page.name} onClick={handleCloseNavMenu} sx={{ justifyContent: 'center' }}>
+                                    <Typography textAlign="center" sx={{ wordBreak: 'break-word' }}>
+                                        {page.name} <span style={{ display: 'block' }}>{page.val}</span>
                                     </Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                     <Typography
                         variant="h5"
                         noWrap
@@ -120,15 +117,14 @@ const Topbar = () => {
                             flexGrow: 1,
                             fontFamily: 'monospace',
                             fontWeight: 700,
-                            letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        Yasin
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page, index) => (
+                        {myInfo.map((page, index) => (
                             <Box key={index} sx={{ mr: 3, }}>
                                 <Button
                                     key={page.name}
@@ -137,7 +133,7 @@ const Topbar = () => {
                                 >
                                     {page.name}
                                 </Button>
-                                <Typography sx={{ marginLeft: '7px' }}>{page.val}</Typography>
+                                <Typography sx={{ marginLeft: '7px', }}>{page.val}</Typography>
                             </Box>
                         ))}
                     </Box>

@@ -15,8 +15,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import MenuItem from '@mui/material/MenuItem';
 import { PageBox } from './ListStyle';
 import useUsers from '../../hooks/useUsers';
-import useFetch from '../../hooks/useFetch';
 import useAddUser from '../../hooks/useAddUser';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const numberOfRows = [
@@ -41,6 +41,7 @@ const numberOfRows = [
 const List = () => {
     // const users = useFetch();
     const [users, setUsers] = useState([]);
+    const [randomUsers, setRandomUsers] = useState([]);
     const [pageSize, setPageSize] = useState(5);
     const [pageNumber, setPageNumber] = useState(1);
     const [totalPage, setTotalPage] = useState(Math.ceil(users?.length / pageSize));
@@ -50,19 +51,25 @@ const List = () => {
         field: '',
         clicked: false
     });
-    const [userList, loading] = useUsers();
+    const [userList, loading] = useUsers(true);
     const [addUser, success] = useAddUser();
 
     const getData = async () => {
-        const response = await fetch('http://localhost:8000/users');
-        const data = await response.json();
-        setUsers(data)
+        const usersResponse = await fetch('http://localhost:8000/users');
+        const users = await usersResponse.json();
+
+        const randomUsersResponse = await fetch('http://localhost:8000/randomUsers');
+        const random = await randomUsersResponse.json();
+
+        if (random.length) {
+            setRandomUsers(random[0])
+            setUsers([...users, ...randomUsers])
+        }
     };
 
     useEffect(() => {
         getData();
-    }, [users.length, success])
-
+    }, [success, users.length]); // eslint-disable-line
 
     let random = [];
 
@@ -72,12 +79,15 @@ const List = () => {
             const { email } = user;
             const { gender } = user;
             const { phone } = user;
-            random.push({ name, email, gender, phone });
+            const id = uuidv4();
+            random.push({ name, email, gender, phone, id });
         })
+
         if (random.length) {
-            addUser(random, true)
+            addUser(random, true, randomUsers.length);
         }
-    }, [userList.length]) // eslint-disable-line
+
+    }, []) // eslint-disable-line
 
     // Pagination functionalities
     const paginate = useCallback((array, page_size, page_number) => {

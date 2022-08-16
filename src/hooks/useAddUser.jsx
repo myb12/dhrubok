@@ -1,31 +1,36 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const useAddUser = () => {
     const [success, setSuccess] = useState(false);
 
-    const addUser = (data, isArray = false) => {
-        setSuccess(false);
-        let stringifyData = JSON.stringify(data);
-        let dataStr;
-        if (isArray) {
-            dataStr = stringifyData.slice(1, (stringifyData.length - 1));
+    const addUser = useCallback((data, isRandom = false, length) => {
+        let url = '';
+
+        if (isRandom) {
+            url = 'http://localhost:8000/randomUsers'
         } else {
-            dataStr = JSON.stringify(data);
+            url = 'http://localhost:8000/users'
         }
 
-        fetch('http://localhost:8000/users', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: dataStr,
-        }).then((res) => {
-            if (res.ok) {
-                setSuccess(true);
-            }
-        }).catch(err => {
-            console.log(err);
-            setSuccess(false);
-        })
-    }
+        setSuccess(false);
+
+        if (!length) {
+            fetch(url, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            }).then((res) => {
+                if (res.ok) {
+                    setSuccess(true);
+                    console.log('resres', res);
+                }
+            }).catch(err => {
+                console.log(err);
+                setSuccess(false);
+            })
+        }
+
+    }, [])
 
     return [addUser, success];
 };
